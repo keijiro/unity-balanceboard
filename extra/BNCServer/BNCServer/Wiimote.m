@@ -61,7 +61,9 @@
 	
 	close(stream);
 	close(sock);
+#if !WIIMOTE_USE_INET
 	unlink(addr.sun_path);
+#endif
 }
 
 @end

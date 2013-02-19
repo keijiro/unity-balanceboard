@@ -27,10 +27,9 @@
 	self.inquiry = nil;
     
     self.statusLine.stringValue = @"";
-		
-	strcpy(basenameDisplay, "");
-	snprintf(basename,104,"%s/Library/Wii Remotes/", getenv("HOME"));
-	
+    
+#if !WIIMOTE_USE_INET
+	snprintf(basename, 104, "%s/Library/Wii Remotes/", getenv("HOME"));
 	NSLog(@"%s", basename);
 	
 	mkdir(basename, 0755);
@@ -46,6 +45,7 @@
 		}
 		// readdir and report errors
 	}
+#endif
     
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(incomingConnection:) name:NSFileHandleConnectionAcceptedNotification object:nil];
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(dataAvailable:) name:NSFileHandleDataAvailableNotification object:nil];
@@ -243,20 +243,28 @@
 	self.connecting.displayName = [NSString stringWithFormat:@"wii%ld", self.connecting.index];
 
 #if WIIMOTE_USE_INET
+    int sock = socket(AF_INET, SOCK_STREAM, 0);
+
     struct sockaddr_in addr;
+    bzero(&addr, sizeof(addr));
     addr.sin_family = AF_INET;
     addr.sin_addr.s_addr = htonl(INADDR_LOOPBACK);
-    addr.sin_port = htons(40000 + self.connecting.index);
-    int sock = socket(AF_INET, SOCK_STREAM, 0);
+    addr.sin_port = htons(8000 + self.connecting.index);
 #else
+	int sock = socket(AF_UNIX, SOCK_STREAM, 0);
+    
     struct sockaddr_un addr;
     bzero(&addr, sizeof(addr));
 	addr.sun_family = AF_UNIX;
 	snprintf(addr.sun_path, 104, "%swii%ld", basename, self.connecting.index);
-	int sock = socket(AF_UNIX, SOCK_STREAM, 0);
 #endif
     
-	bind(sock, (void*)&addr, sizeof(addr));
+	if (bind(sock, (void*)&addr, sizeof(addr)) < 0) {
+		[device closeConnection];
+		self.statusLine.stringValue = @"Error binding a socket.";
+		return;
+    }
+    
 	listen(sock, 0);
 	
     self.connecting->sock = sock;
@@ -294,7 +302,7 @@
 		[self removeWiimote:wiimote];
         self.statusLine.stringValue = [NSString stringWithFormat:@"Wii Remote %@ disconnected.", wiimote.displayName];
 	} else {
-        self.statusLine.stringValue= @"Aborted connection.";
+//        self.statusLine.stringValue= @"Aborted connection.";
         self.connecting = nil;
         self.syncButton.enabled = YES;
 		[self.syncIndicator stopAnimation:self];
@@ -308,7 +316,11 @@
 		wiimote->stream = -1;
 		[self.wiiList performSelectorOnMainThread:@selector(reloadData) withObject:nil waitUntilDone:NO];
 
+#if WIIMOTE_USE_INET
+        struct sockaddr_in far;
+#else
         struct sockaddr_un far;
+#endif
 		socklen_t farlen = sizeof(far);
 		wiimote->stream = accept(wiimote->sock, (struct sockaddr*)&far, &farlen);
 		

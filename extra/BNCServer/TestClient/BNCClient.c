@@ -9,21 +9,38 @@
 
 #include "BNCClient.h"
 
+#if WIIMOTE_USE_INET
+WiiDevRef WiiDevNewForPort(int port) {
+#else
 WiiDevRef WiiDevNewFromName(const char *name) {
+#endif
 	WiiDevRef out = calloc(sizeof(struct WiiDev), 1);
 	
+#if WIIMOTE_USE_INET
+	out->sock = socket(AF_INET, SOCK_STREAM, 0);
+#else
 	out->sock = socket(AF_UNIX, SOCK_STREAM, 0);
+#endif
 	if (!out->sock) {
 		free(out);
 		return NULL;
 	}
 
+#if WIIMOTE_USE_INET
+    struct sockaddr_in addr;
+    bzero(&addr, sizeof(addr));
+    addr.sin_family = AF_INET;
+    addr.sin_addr.s_addr = htonl(INADDR_LOOPBACK);
+    addr.sin_port = htons(port);
+#else
     struct sockaddr_un addr;
     bzero(&addr, sizeof(addr));
 	addr.sun_family = AF_UNIX;
 	snprintf(addr.sun_path, sizeof(addr.sun_path), "%s/Library/Wii Remotes/%s", getenv("HOME"), name);
-
-	if (connect(out->sock, (struct sockaddr*)&addr, sizeof(addr))) {
+#endif
+    
+	if (connect(out->sock, (struct sockaddr*)&addr, sizeof(addr)) < 0) {
+        puts("Can't connecto to the server.");
 		free(out);
 		return NULL;
 	}

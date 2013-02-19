@@ -7,7 +7,6 @@
 
 @interface BncServerAppDelegate : NSObject <NSApplicationDelegate>
 {
-    char basenameDisplay[128];
     char basename[104];
 }
 

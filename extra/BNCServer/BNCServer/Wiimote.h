@@ -8,9 +8,10 @@
 #import <IOBluetooth/objc/IOBluetoothDeviceInquiry.h>
 #import <IOBluetooth/objc/IOBluetoothL2CAPChannel.h>
 
+#include <netinet/in.h>
 #include <sys/un.h>
 
-#define WIIMOTE_USE_INET 0
+#define WIIMOTE_USE_INET 1
 
 @interface Wiimote : NSObject
 {

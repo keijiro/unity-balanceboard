@@ -56,7 +56,11 @@ void memread_callback(int address, const WiiDevData data, int length) {
 }
 
 int main(int argc, const char * argv[]) {
+#if WIIMOTE_USE_INET
+    WiiDevRef device = WiiDevNewForPort(8000 + 1);
+#else
     WiiDevRef device = WiiDevNewFromName("wii1");
+#endif
     
     if (device == NULL) {
         std::puts("No BNC found.");
