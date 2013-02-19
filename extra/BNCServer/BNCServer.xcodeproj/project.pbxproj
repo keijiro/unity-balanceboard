@@ -15,7 +15,7 @@
 		0FA3F81216D24FF100765EA6 /* Wiimote.m in Sources */ = {isa = PBXBuildFile; fileRef = 0FA3F81116D24FF100765EA6 /* Wiimote.m */; };
 		0FA3F81416D31AE900765EA6 /* IOBluetooth.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0FA3F81316D31AE900765EA6 /* IOBluetooth.framework */; };
 		0FB1C35A16D3508C00CF6B00 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0FB1C35916D3508C00CF6B00 /* main.cpp */; };
-		0FB1C36216D351B400CF6B00 /* BNCClient.c in Sources */ = {isa = PBXBuildFile; fileRef = 0FB1C36016D351B400CF6B00 /* BNCClient.c */; };
+		0FB1C36216D351B400CF6B00 /* BNCClient.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0FB1C36016D351B400CF6B00 /* BNCClient.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -48,7 +48,7 @@
 		0FA3F81316D31AE900765EA6 /* IOBluetooth.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IOBluetooth.framework; path = System/Library/Frameworks/IOBluetooth.framework; sourceTree = SDKROOT; };
 		0FB1C35716D3508C00CF6B00 /* TestClient */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = TestClient; sourceTree = BUILT_PRODUCTS_DIR; };
 		0FB1C35916D3508C00CF6B00 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
-		0FB1C36016D351B400CF6B00 /* BNCClient.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = BNCClient.c; sourceTree = "<group>"; };
+		0FB1C36016D351B400CF6B00 /* BNCClient.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = BNCClient.cpp; sourceTree = "<group>"; };
 		0FB1C36116D351B400CF6B00 /* BNCClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BNCClient.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -138,7 +138,7 @@
 		0FB1C35816D3508C00CF6B00 /* TestClient */ = {
 			isa = PBXGroup;
 			children = (
-				0FB1C36016D351B400CF6B00 /* BNCClient.c */,
+				0FB1C36016D351B400CF6B00 /* BNCClient.cpp */,
 				0FB1C36116D351B400CF6B00 /* BNCClient.h */,
 				0FB1C35916D3508C00CF6B00 /* main.cpp */,
 			);
@@ -238,7 +238,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				0FB1C35A16D3508C00CF6B00 /* main.cpp in Sources */,
-				0FB1C36216D351B400CF6B00 /* BNCClient.c in Sources */,
+				0FB1C36216D351B400CF6B00 /* BNCClient.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -389,6 +389,7 @@
 				0FB1C35E16D3508C00CF6B00 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

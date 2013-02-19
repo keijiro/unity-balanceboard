@@ -1,35 +1,38 @@
-#ifndef WIIDEV_H
-#define WIIDEV_H
-
+#pragma once
 #ifdef __cplusplus
-extern "C" {
-#endif
 
-typedef unsigned char WiiDevData[];
-typedef void (*WiiDevMemReadCallback)(int address, const WiiDevData data, int length);
-typedef void (*WiiDevDataCallback)(WiiDevData data, int length);
+#include <string>
 
-typedef struct WiiDev {
-	int sock;
-	WiiDevDataCallback dataCallback;
-	WiiDevMemReadCallback memCallback;
-} *WiiDevRef;
+namespace BNC {
+    
+    class ClientBase {
+    public:
+        typedef unsigned long Address;
+        typedef unsigned long Size;
+        typedef unsigned char Byte;
+        
+        ClientBase();
+        ~ClientBase();
 
-WiiDevRef WiiDevNewForPort(int port);
-void WiiDevRelease(WiiDevRef ref);
+        virtual void OnReceiveData(const Byte* data, Size length) = 0;
+        virtual void OnReadMemory(Address offset, const Byte* data, Size length) = 0;
+        
+        bool OpenPort(int port);
+        bool Update();
 
-int WiiDevUpdate(WiiDevRef ref);
-
-void WiiDevSetMemReadCallback(WiiDevRef ref, WiiDevMemReadCallback callback);
-void WiiDevSetDataReceivedCallback(WiiDevRef ref, WiiDevDataCallback callback);
-
-void WiiDevReadMem(WiiDevRef ref, int address, int length);
-void WiiDevWriteMem(WiiDevRef ref, int address, WiiDevData data, int length);
-
-void WiiDevSend(WiiDevRef ref, WiiDevData data, int length);
-
-#ifdef __cplusplus
+        bool SendData(const Byte* data, Size length);
+        
+        bool RequestReadMemory(Address address, Size length);
+        bool RequestWriteMemory(Address address, const Byte* data, Size length);
+        
+        const std::string& GetLastError() const {
+            return error_;
+        }
+        
+    private:
+        int socket_;
+        std::string error_;
+    };
 }
-#endif
 
 #endif
