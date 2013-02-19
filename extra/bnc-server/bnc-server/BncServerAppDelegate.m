@@ -316,8 +316,8 @@
 		setsockopt(wiimote->stream, SOL_SOCKET, SO_NOSIGPIPE, &value, sizeof(value));
 		[wiimote.streamLock unlock];
         
-        NSLog(@"Accepted connection on fd %d", wiimote->stream);
 		if (wiimote->stream < 0) break;
+        NSLog(@"Accepted connection on fd %d", wiimote->stream);
         
 		[self.wiiList performSelectorOnMainThread:@selector(reloadData) withObject:nil waitUntilDone:NO];
 		
