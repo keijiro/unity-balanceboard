@@ -10,7 +10,7 @@
 		0FA3F7F416D24EF300765EA6 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0FA3F7F316D24EF300765EA6 /* Cocoa.framework */; };
 		0FA3F7FE16D24EF300765EA6 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 0FA3F7FC16D24EF300765EA6 /* InfoPlist.strings */; };
 		0FA3F80016D24EF300765EA6 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 0FA3F7FF16D24EF300765EA6 /* main.m */; };
-		0FA3F80716D24EF300765EA6 /* BncServerAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 0FA3F80616D24EF300765EA6 /* BncServerAppDelegate.m */; };
+		0FA3F80716D24EF300765EA6 /* WiimoteDriverAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 0FA3F80616D24EF300765EA6 /* WiimoteDriverAppDelegate.m */; };
 		0FA3F80A16D24EF300765EA6 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0FA3F80816D24EF300765EA6 /* MainMenu.xib */; };
 		0FA3F81216D24FF100765EA6 /* Wiimote.m in Sources */ = {isa = PBXBuildFile; fileRef = 0FA3F81116D24FF100765EA6 /* Wiimote.m */; };
 		0FA3F81416D31AE900765EA6 /* IOBluetooth.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0FA3F81316D31AE900765EA6 /* IOBluetooth.framework */; };
@@ -31,17 +31,17 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		0FA3F7F016D24EF300765EA6 /* BNCServer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BNCServer.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		0FA3F7F016D24EF300765EA6 /* WiimoteDriver.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = WiimoteDriver.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		0FA3F7F316D24EF300765EA6 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
 		0FA3F7F616D24EF300765EA6 /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
 		0FA3F7F716D24EF300765EA6 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
 		0FA3F7F816D24EF300765EA6 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
-		0FA3F7FB16D24EF300765EA6 /* BNCServer-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "BNCServer-Info.plist"; sourceTree = "<group>"; };
+		0FA3F7FB16D24EF300765EA6 /* WiimoteDriver-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "WiimoteDriver-Info.plist"; sourceTree = "<group>"; };
 		0FA3F7FD16D24EF300765EA6 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		0FA3F7FF16D24EF300765EA6 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
-		0FA3F80116D24EF300765EA6 /* BNCServer-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "BNCServer-Prefix.pch"; sourceTree = "<group>"; };
-		0FA3F80516D24EF300765EA6 /* BncServerAppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BncServerAppDelegate.h; sourceTree = "<group>"; };
-		0FA3F80616D24EF300765EA6 /* BncServerAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BncServerAppDelegate.m; sourceTree = "<group>"; };
+		0FA3F80116D24EF300765EA6 /* WiimoteDriver-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "WiimoteDriver-Prefix.pch"; sourceTree = "<group>"; };
+		0FA3F80516D24EF300765EA6 /* WiimoteDriverAppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = WiimoteDriverAppDelegate.h; sourceTree = "<group>"; };
+		0FA3F80616D24EF300765EA6 /* WiimoteDriverAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = WiimoteDriverAppDelegate.m; sourceTree = "<group>"; };
 		0FA3F80916D24EF300765EA6 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/MainMenu.xib; sourceTree = "<group>"; };
 		0FA3F81016D24FF000765EA6 /* Wiimote.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Wiimote.h; sourceTree = "<group>"; };
 		0FA3F81116D24FF100765EA6 /* Wiimote.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Wiimote.m; sourceTree = "<group>"; };
@@ -75,7 +75,7 @@
 		0FA3F7E716D24EF300765EA6 = {
 			isa = PBXGroup;
 			children = (
-				0FA3F7F916D24EF300765EA6 /* BNCServer */,
+				0FA3F7F916D24EF300765EA6 /* WiimoteDriver */,
 				0FB1C35816D3508C00CF6B00 /* TestClient */,
 				0FA3F7F216D24EF300765EA6 /* Frameworks */,
 				0FA3F7F116D24EF300765EA6 /* Products */,
@@ -85,7 +85,7 @@
 		0FA3F7F116D24EF300765EA6 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				0FA3F7F016D24EF300765EA6 /* BNCServer.app */,
+				0FA3F7F016D24EF300765EA6 /* WiimoteDriver.app */,
 				0FB1C35716D3508C00CF6B00 /* TestClient */,
 			);
 			name = Products;
@@ -111,26 +111,26 @@
 			name = "Other Frameworks";
 			sourceTree = "<group>";
 		};
-		0FA3F7F916D24EF300765EA6 /* BNCServer */ = {
+		0FA3F7F916D24EF300765EA6 /* WiimoteDriver */ = {
 			isa = PBXGroup;
 			children = (
-				0FA3F80516D24EF300765EA6 /* BncServerAppDelegate.h */,
-				0FA3F80616D24EF300765EA6 /* BncServerAppDelegate.m */,
+				0FA3F80516D24EF300765EA6 /* WiimoteDriverAppDelegate.h */,
+				0FA3F80616D24EF300765EA6 /* WiimoteDriverAppDelegate.m */,
 				0FA3F80816D24EF300765EA6 /* MainMenu.xib */,
 				0FA3F81016D24FF000765EA6 /* Wiimote.h */,
 				0FA3F81116D24FF100765EA6 /* Wiimote.m */,
 				0FA3F7FA16D24EF300765EA6 /* Supporting Files */,
 			);
-			path = BNCServer;
+			path = WiimoteDriver;
 			sourceTree = "<group>";
 		};
 		0FA3F7FA16D24EF300765EA6 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
-				0FA3F7FB16D24EF300765EA6 /* BNCServer-Info.plist */,
+				0FA3F7FB16D24EF300765EA6 /* WiimoteDriver-Info.plist */,
 				0FA3F7FC16D24EF300765EA6 /* InfoPlist.strings */,
 				0FA3F7FF16D24EF300765EA6 /* main.m */,
-				0FA3F80116D24EF300765EA6 /* BNCServer-Prefix.pch */,
+				0FA3F80116D24EF300765EA6 /* WiimoteDriver-Prefix.pch */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -148,9 +148,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		0FA3F7EF16D24EF300765EA6 /* BNCServer */ = {
+		0FA3F7EF16D24EF300765EA6 /* WiimoteDriver */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 0FA3F80D16D24EF300765EA6 /* Build configuration list for PBXNativeTarget "BNCServer" */;
+			buildConfigurationList = 0FA3F80D16D24EF300765EA6 /* Build configuration list for PBXNativeTarget "WiimoteDriver" */;
 			buildPhases = (
 				0FA3F7EC16D24EF300765EA6 /* Sources */,
 				0FA3F7ED16D24EF300765EA6 /* Frameworks */,
@@ -160,9 +160,9 @@
 			);
 			dependencies = (
 			);
-			name = BNCServer;
-			productName = BNCServer;
-			productReference = 0FA3F7F016D24EF300765EA6 /* BNCServer.app */;
+			name = WiimoteDriver;
+			productName = WiimoteDriver;
+			productReference = 0FA3F7F016D24EF300765EA6 /* WiimoteDriver.app */;
 			productType = "com.apple.product-type.application";
 		};
 		0FB1C35616D3508C00CF6B00 /* TestClient */ = {
@@ -188,11 +188,11 @@
 		0FA3F7E816D24EF300765EA6 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				CLASSPREFIX = BncServer;
+				CLASSPREFIX = WiimoteDriver;
 				LastUpgradeCheck = 0460;
 				ORGANIZATIONNAME = "Radium Software";
 			};
-			buildConfigurationList = 0FA3F7EB16D24EF300765EA6 /* Build configuration list for PBXProject "BNCServer" */;
+			buildConfigurationList = 0FA3F7EB16D24EF300765EA6 /* Build configuration list for PBXProject "WiimoteDriver" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
@@ -204,7 +204,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				0FA3F7EF16D24EF300765EA6 /* BNCServer */,
+				0FA3F7EF16D24EF300765EA6 /* WiimoteDriver */,
 				0FB1C35616D3508C00CF6B00 /* TestClient */,
 			);
 		};
@@ -228,7 +228,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				0FA3F80016D24EF300765EA6 /* main.m in Sources */,
-				0FA3F80716D24EF300765EA6 /* BncServerAppDelegate.m in Sources */,
+				0FA3F80716D24EF300765EA6 /* WiimoteDriverAppDelegate.m in Sources */,
 				0FA3F81216D24FF100765EA6 /* Wiimote.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -328,9 +328,9 @@
 			buildSettings = {
 				COMBINE_HIDPI_IMAGES = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "BNCServer/BNCServer-Prefix.pch";
-				INFOPLIST_FILE = "BNCServer/BNCServer-Info.plist";
-				PRODUCT_NAME = BNCServer;
+				GCC_PREFIX_HEADER = "WiimoteDriver/WiimoteDriver-Prefix.pch";
+				INFOPLIST_FILE = "WiimoteDriver/WiimoteDriver-Info.plist";
+				PRODUCT_NAME = WiimoteDriver;
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -340,9 +340,9 @@
 			buildSettings = {
 				COMBINE_HIDPI_IMAGES = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "BNCServer/BNCServer-Prefix.pch";
-				INFOPLIST_FILE = "BNCServer/BNCServer-Info.plist";
-				PRODUCT_NAME = BNCServer;
+				GCC_PREFIX_HEADER = "WiimoteDriver/WiimoteDriver-Prefix.pch";
+				INFOPLIST_FILE = "WiimoteDriver/WiimoteDriver-Info.plist";
+				PRODUCT_NAME = WiimoteDriver;
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;
@@ -364,7 +364,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		0FA3F7EB16D24EF300765EA6 /* Build configuration list for PBXProject "BNCServer" */ = {
+		0FA3F7EB16D24EF300765EA6 /* Build configuration list for PBXProject "WiimoteDriver" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				0FA3F80B16D24EF300765EA6 /* Debug */,
@@ -373,7 +373,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		0FA3F80D16D24EF300765EA6 /* Build configuration list for PBXNativeTarget "BNCServer" */ = {
+		0FA3F80D16D24EF300765EA6 /* Build configuration list for PBXNativeTarget "WiimoteDriver" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				0FA3F80E16D24EF300765EA6 /* Debug */,
