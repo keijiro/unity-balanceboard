@@ -1,0 +1,309 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		0FA3F7F416D24EF300765EA6 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0FA3F7F316D24EF300765EA6 /* Cocoa.framework */; };
+		0FA3F7FE16D24EF300765EA6 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 0FA3F7FC16D24EF300765EA6 /* InfoPlist.strings */; };
+		0FA3F80016D24EF300765EA6 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 0FA3F7FF16D24EF300765EA6 /* main.m */; };
+		0FA3F80716D24EF300765EA6 /* BncServerAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 0FA3F80616D24EF300765EA6 /* BncServerAppDelegate.m */; };
+		0FA3F80A16D24EF300765EA6 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0FA3F80816D24EF300765EA6 /* MainMenu.xib */; };
+		0FA3F81216D24FF100765EA6 /* Wiimote.m in Sources */ = {isa = PBXBuildFile; fileRef = 0FA3F81116D24FF100765EA6 /* Wiimote.m */; };
+		0FA3F81416D31AE900765EA6 /* IOBluetooth.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0FA3F81316D31AE900765EA6 /* IOBluetooth.framework */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		0FA3F7F016D24EF300765EA6 /* bnc-server.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "bnc-server.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		0FA3F7F316D24EF300765EA6 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
+		0FA3F7F616D24EF300765EA6 /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
+		0FA3F7F716D24EF300765EA6 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
+		0FA3F7F816D24EF300765EA6 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
+		0FA3F7FB16D24EF300765EA6 /* bnc-server-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "bnc-server-Info.plist"; sourceTree = "<group>"; };
+		0FA3F7FD16D24EF300765EA6 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		0FA3F7FF16D24EF300765EA6 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		0FA3F80116D24EF300765EA6 /* bnc-server-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "bnc-server-Prefix.pch"; sourceTree = "<group>"; };
+		0FA3F80516D24EF300765EA6 /* BncServerAppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BncServerAppDelegate.h; sourceTree = "<group>"; };
+		0FA3F80616D24EF300765EA6 /* BncServerAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BncServerAppDelegate.m; sourceTree = "<group>"; };
+		0FA3F80916D24EF300765EA6 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/MainMenu.xib; sourceTree = "<group>"; };
+		0FA3F81016D24FF000765EA6 /* Wiimote.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Wiimote.h; sourceTree = "<group>"; };
+		0FA3F81116D24FF100765EA6 /* Wiimote.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Wiimote.m; sourceTree = "<group>"; };
+		0FA3F81316D31AE900765EA6 /* IOBluetooth.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IOBluetooth.framework; path = System/Library/Frameworks/IOBluetooth.framework; sourceTree = SDKROOT; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		0FA3F7ED16D24EF300765EA6 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				0FA3F81416D31AE900765EA6 /* IOBluetooth.framework in Frameworks */,
+				0FA3F7F416D24EF300765EA6 /* Cocoa.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		0FA3F7E716D24EF300765EA6 = {
+			isa = PBXGroup;
+			children = (
+				0FA3F81316D31AE900765EA6 /* IOBluetooth.framework */,
+				0FA3F7F916D24EF300765EA6 /* bnc-server */,
+				0FA3F7F216D24EF300765EA6 /* Frameworks */,
+				0FA3F7F116D24EF300765EA6 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		0FA3F7F116D24EF300765EA6 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				0FA3F7F016D24EF300765EA6 /* bnc-server.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		0FA3F7F216D24EF300765EA6 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				0FA3F7F316D24EF300765EA6 /* Cocoa.framework */,
+				0FA3F7F516D24EF300765EA6 /* Other Frameworks */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		0FA3F7F516D24EF300765EA6 /* Other Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				0FA3F7F616D24EF300765EA6 /* AppKit.framework */,
+				0FA3F7F716D24EF300765EA6 /* CoreData.framework */,
+				0FA3F7F816D24EF300765EA6 /* Foundation.framework */,
+			);
+			name = "Other Frameworks";
+			sourceTree = "<group>";
+		};
+		0FA3F7F916D24EF300765EA6 /* bnc-server */ = {
+			isa = PBXGroup;
+			children = (
+				0FA3F80516D24EF300765EA6 /* BncServerAppDelegate.h */,
+				0FA3F80616D24EF300765EA6 /* BncServerAppDelegate.m */,
+				0FA3F80816D24EF300765EA6 /* MainMenu.xib */,
+				0FA3F81016D24FF000765EA6 /* Wiimote.h */,
+				0FA3F81116D24FF100765EA6 /* Wiimote.m */,
+				0FA3F7FA16D24EF300765EA6 /* Supporting Files */,
+			);
+			path = "bnc-server";
+			sourceTree = "<group>";
+		};
+		0FA3F7FA16D24EF300765EA6 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				0FA3F7FB16D24EF300765EA6 /* bnc-server-Info.plist */,
+				0FA3F7FC16D24EF300765EA6 /* InfoPlist.strings */,
+				0FA3F7FF16D24EF300765EA6 /* main.m */,
+				0FA3F80116D24EF300765EA6 /* bnc-server-Prefix.pch */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		0FA3F7EF16D24EF300765EA6 /* bnc-server */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 0FA3F80D16D24EF300765EA6 /* Build configuration list for PBXNativeTarget "bnc-server" */;
+			buildPhases = (
+				0FA3F7EC16D24EF300765EA6 /* Sources */,
+				0FA3F7ED16D24EF300765EA6 /* Frameworks */,
+				0FA3F7EE16D24EF300765EA6 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "bnc-server";
+			productName = "bnc-server";
+			productReference = 0FA3F7F016D24EF300765EA6 /* bnc-server.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		0FA3F7E816D24EF300765EA6 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				CLASSPREFIX = BncServer;
+				LastUpgradeCheck = 0460;
+				ORGANIZATIONNAME = "Radium Software";
+			};
+			buildConfigurationList = 0FA3F7EB16D24EF300765EA6 /* Build configuration list for PBXProject "bnc-server" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = 0FA3F7E716D24EF300765EA6;
+			productRefGroup = 0FA3F7F116D24EF300765EA6 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				0FA3F7EF16D24EF300765EA6 /* bnc-server */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		0FA3F7EE16D24EF300765EA6 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				0FA3F7FE16D24EF300765EA6 /* InfoPlist.strings in Resources */,
+				0FA3F80A16D24EF300765EA6 /* MainMenu.xib in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		0FA3F7EC16D24EF300765EA6 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				0FA3F80016D24EF300765EA6 /* main.m in Sources */,
+				0FA3F80716D24EF300765EA6 /* BncServerAppDelegate.m in Sources */,
+				0FA3F81216D24FF100765EA6 /* Wiimote.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+		0FA3F7FC16D24EF300765EA6 /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				0FA3F7FD16D24EF300765EA6 /* en */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+		0FA3F80816D24EF300765EA6 /* MainMenu.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				0FA3F80916D24EF300765EA6 /* en */,
+			);
+			name = MainMenu.xib;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		0FA3F80B16D24EF300765EA6 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.8;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		0FA3F80C16D24EF300765EA6 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.8;
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+		0FA3F80E16D24EF300765EA6 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COMBINE_HIDPI_IMAGES = YES;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "bnc-server/bnc-server-Prefix.pch";
+				INFOPLIST_FILE = "bnc-server/bnc-server-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = app;
+			};
+			name = Debug;
+		};
+		0FA3F80F16D24EF300765EA6 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COMBINE_HIDPI_IMAGES = YES;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "bnc-server/bnc-server-Prefix.pch";
+				INFOPLIST_FILE = "bnc-server/bnc-server-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = app;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		0FA3F7EB16D24EF300765EA6 /* Build configuration list for PBXProject "bnc-server" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				0FA3F80B16D24EF300765EA6 /* Debug */,
+				0FA3F80C16D24EF300765EA6 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		0FA3F80D16D24EF300765EA6 /* Build configuration list for PBXNativeTarget "bnc-server" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				0FA3F80E16D24EF300765EA6 /* Debug */,
+				0FA3F80F16D24EF300765EA6 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 0FA3F7E816D24EF300765EA6 /* Project object */;
+}
