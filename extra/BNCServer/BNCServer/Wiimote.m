@@ -10,6 +10,8 @@
 {
     self = [super init];
     if (self) {
+        stream = -1;
+        sock = -1;
 		self.streamLock = [[NSLock alloc] init];
 		self.deviceLock = [[NSLock alloc] init];
     }
@@ -59,11 +61,8 @@
     self.cchan = nil;
     self.device = nil;
 	
-	close(stream);
-	close(sock);
-#if !WIIMOTE_USE_INET
-	unlink(addr.sun_path);
-#endif
+    if (stream >= 0) close(stream);
+	if (sock >= 0) close(sock);
 }
 
 @end

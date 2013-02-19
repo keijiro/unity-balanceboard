@@ -6,9 +6,6 @@
 #import "Wiimote.h"
 
 @interface BncServerAppDelegate : NSObject <NSApplicationDelegate>
-{
-    char basename[104];
-}
 
 @property NSMutableArray *wiimotes;
 @property Wiimote *connecting;

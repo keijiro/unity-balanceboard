@@ -9,19 +9,12 @@
 #import <IOBluetooth/objc/IOBluetoothL2CAPChannel.h>
 
 #include <netinet/in.h>
-#include <sys/un.h>
-
-#define WIIMOTE_USE_INET 1
 
 @interface Wiimote : NSObject
 {
 @public
 	int sock, stream;
-#if WIIMOTE_USE_INET
     struct sockaddr_in addr;
-#else
-	struct sockaddr_un addr;
-#endif
 }
 
 @property (assign) NSInteger index;
