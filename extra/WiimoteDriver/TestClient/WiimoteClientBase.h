@@ -3,7 +3,7 @@
 
 #include <string>
 
-namespace BNC {
+namespace Wiimote {
     
     class ClientBase {
     public:

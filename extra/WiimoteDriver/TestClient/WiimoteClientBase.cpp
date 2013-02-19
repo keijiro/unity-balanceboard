@@ -1,4 +1,4 @@
-#include "BNCClient.h"
+#include "WiimoteClientBase.h"
 
 #include <unistd.h>
 #include <stdlib.h>
@@ -9,7 +9,7 @@
 #include <stdio.h>
 #include <string.h>
 
-namespace BNC {
+namespace Wiimote {
 
     ClientBase::ClientBase() {
         socket_ = -1;

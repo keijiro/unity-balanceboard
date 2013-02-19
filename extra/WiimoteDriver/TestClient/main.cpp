@@ -1,9 +1,9 @@
-#include "BNCClient.h"
+#include "WiimoteClientBase.h"
 #include <unistd.h>
 
 namespace {
     
-    class SimpleBNCClient : public BNC::ClientBase {
+    class BNCClient : public Wiimote::ClientBase {
     public:
         union ExtensionData {
             unsigned char raw_[8];
@@ -65,7 +65,8 @@ namespace {
 }
 
 int main(int argc, const char * argv[]) {
-    SimpleBNCClient client;
+    BNCClient client;
+    typedef BNCClient::Byte Byte;
 
     if (!client.OpenPort(8000 + 1)) {
         std::puts("No BNC found.");
@@ -73,8 +74,8 @@ int main(int argc, const char * argv[]) {
     }
     
     {
-        SimpleBNCClient::Byte data1[] = {0x55};
-        SimpleBNCClient::Byte data2[] = {0x00};
+        Byte data1[] = {0x55};
+        Byte data2[] = {0x00};
         client.RequestWriteMemory(0x4a400f0, data1, 1);
         client.RequestWriteMemory(0x4a400fb, data2, 1);
     }
@@ -85,7 +86,7 @@ int main(int argc, const char * argv[]) {
     client.RequestReadMemory(0x4a40024 + 16, 8);
     
     {
-        SimpleBNCClient::Byte data[] = {0xa2, 0x12, 0x00, 0x32};
+        Byte data[] = {0xa2, 0x12, 0x00, 0x32};
         client.SendData(data, 4);
     }
     
