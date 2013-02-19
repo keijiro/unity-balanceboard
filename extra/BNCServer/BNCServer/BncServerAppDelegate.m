@@ -293,7 +293,7 @@
 		[self removeWiimote:wiimote];
         self.statusLine.stringValue = [NSString stringWithFormat:@"Wii Remote %@ disconnected.", wiimote.displayName];
 	} else {
-        self.statusLine.stringValue= @"Connecting Wii Remote  disconnected.";
+        self.statusLine.stringValue= @"Aborted connection.";
         self.connecting = nil;
         self.syncButton.enabled = YES;
 		[self.syncIndicator stopAnimation:self];

@@ -43,12 +43,12 @@
     
     if (self.device != nil) {
         if ([self.device isConnected]) {
-            if (self.ichan != nil) {
-                [self.ichan closeChannel];
-            }
-
             if (self.cchan != nil) {
                 [self.cchan closeChannel];
+            }
+
+            if (self.ichan != nil) {
+                [self.ichan closeChannel];
             }
             
             [self.device closeConnection];
