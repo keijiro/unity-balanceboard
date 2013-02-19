@@ -250,6 +250,7 @@
     int sock = socket(AF_INET, SOCK_STREAM, 0);
 #else
     struct sockaddr_un addr;
+    bzero(&addr, sizeof(addr));
 	addr.sun_family = AF_UNIX;
 	snprintf(addr.sun_path, 104, "%swii%ld", basename, self.connecting.index);
 	int sock = socket(AF_UNIX, SOCK_STREAM, 0);
@@ -318,7 +319,7 @@
         
 		if (wiimote->stream < 0) break;
         NSLog(@"Accepted connection on fd %d", wiimote->stream);
-        
+
 		[self.wiiList performSelectorOnMainThread:@selector(reloadData) withObject:nil waitUntilDone:NO];
 		
 		unsigned char buffer[256];
@@ -342,7 +343,7 @@
 				break;
 			}
             
-            if (buffer[0] == 0x52) {
+            if (buffer[0] == 0xa2) {
                 [wiimote.cchan writeSync:buffer length:length];
             }
 		}
@@ -358,7 +359,7 @@
 		
         NSLog(@"%@ Stream closed", wiimote.displayName);
 		
-		[wiimote performSelectorOnMainThread:@selector(reinit) withObject:nil waitUntilDone:YES];
+		[wiimote performSelectorOnMainThread:@selector(reinitialize) withObject:nil waitUntilDone:YES];
 	}
 }
 

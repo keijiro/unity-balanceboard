@@ -18,10 +18,10 @@
         
 - (void)reinitialize
 {
-	[self.cchan writeSync:(unsigned char[]){0x52, 0x11, 0xF0} length:3];
-	[self.cchan writeSync:(unsigned char[]){0x52, 0x12, 0x00, 0x30} length:4];
-	[self.cchan writeSync:(unsigned char[]){0x52, 0x13, 0x00} length:3];
-	[self.cchan writeSync:(unsigned char[]){0x52, 0x1A, 0x00} length:3];
+	[self.cchan writeSync:(unsigned char[]){0xa2, 0x11, 0xF0} length:3];
+	[self.cchan writeSync:(unsigned char[]){0xa2, 0x12, 0x00, 0x30} length:4];
+	[self.cchan writeSync:(unsigned char[]){0xa2, 0x13, 0x00} length:3];
+	[self.cchan writeSync:(unsigned char[]){0xa2, 0x1A, 0x00} length:3];
 }
 
 - (void)disconnect

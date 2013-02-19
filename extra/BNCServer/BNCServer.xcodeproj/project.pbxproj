@@ -14,7 +14,21 @@
 		0FA3F80A16D24EF300765EA6 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0FA3F80816D24EF300765EA6 /* MainMenu.xib */; };
 		0FA3F81216D24FF100765EA6 /* Wiimote.m in Sources */ = {isa = PBXBuildFile; fileRef = 0FA3F81116D24FF100765EA6 /* Wiimote.m */; };
 		0FA3F81416D31AE900765EA6 /* IOBluetooth.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0FA3F81316D31AE900765EA6 /* IOBluetooth.framework */; };
+		0FB1C35A16D3508C00CF6B00 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0FB1C35916D3508C00CF6B00 /* main.cpp */; };
+		0FB1C36216D351B400CF6B00 /* BNCClient.c in Sources */ = {isa = PBXBuildFile; fileRef = 0FB1C36016D351B400CF6B00 /* BNCClient.c */; };
 /* End PBXBuildFile section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		0FB1C35516D3508C00CF6B00 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = /usr/share/man/man1/;
+			dstSubfolderSpec = 0;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 1;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		0FA3F7F016D24EF300765EA6 /* BNCServer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BNCServer.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -32,6 +46,10 @@
 		0FA3F81016D24FF000765EA6 /* Wiimote.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Wiimote.h; sourceTree = "<group>"; };
 		0FA3F81116D24FF100765EA6 /* Wiimote.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Wiimote.m; sourceTree = "<group>"; };
 		0FA3F81316D31AE900765EA6 /* IOBluetooth.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IOBluetooth.framework; path = System/Library/Frameworks/IOBluetooth.framework; sourceTree = SDKROOT; };
+		0FB1C35716D3508C00CF6B00 /* TestClient */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = TestClient; sourceTree = BUILT_PRODUCTS_DIR; };
+		0FB1C35916D3508C00CF6B00 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
+		0FB1C36016D351B400CF6B00 /* BNCClient.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = BNCClient.c; sourceTree = "<group>"; };
+		0FB1C36116D351B400CF6B00 /* BNCClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BNCClient.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -44,6 +62,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		0FB1C35416D3508C00CF6B00 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -51,6 +76,7 @@
 			isa = PBXGroup;
 			children = (
 				0FA3F7F916D24EF300765EA6 /* BNCServer */,
+				0FB1C35816D3508C00CF6B00 /* TestClient */,
 				0FA3F7F216D24EF300765EA6 /* Frameworks */,
 				0FA3F7F116D24EF300765EA6 /* Products */,
 			);
@@ -60,6 +86,7 @@
 			isa = PBXGroup;
 			children = (
 				0FA3F7F016D24EF300765EA6 /* BNCServer.app */,
+				0FB1C35716D3508C00CF6B00 /* TestClient */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -108,6 +135,16 @@
 			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
+		0FB1C35816D3508C00CF6B00 /* TestClient */ = {
+			isa = PBXGroup;
+			children = (
+				0FB1C36016D351B400CF6B00 /* BNCClient.c */,
+				0FB1C36116D351B400CF6B00 /* BNCClient.h */,
+				0FB1C35916D3508C00CF6B00 /* main.cpp */,
+			);
+			path = TestClient;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -127,6 +164,23 @@
 			productName = BNCServer;
 			productReference = 0FA3F7F016D24EF300765EA6 /* BNCServer.app */;
 			productType = "com.apple.product-type.application";
+		};
+		0FB1C35616D3508C00CF6B00 /* TestClient */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 0FB1C35F16D3508C00CF6B00 /* Build configuration list for PBXNativeTarget "TestClient" */;
+			buildPhases = (
+				0FB1C35316D3508C00CF6B00 /* Sources */,
+				0FB1C35416D3508C00CF6B00 /* Frameworks */,
+				0FB1C35516D3508C00CF6B00 /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = TestClient;
+			productName = TestClient;
+			productReference = 0FB1C35716D3508C00CF6B00 /* TestClient */;
+			productType = "com.apple.product-type.tool";
 		};
 /* End PBXNativeTarget section */
 
@@ -151,6 +205,7 @@
 			projectRoot = "";
 			targets = (
 				0FA3F7EF16D24EF300765EA6 /* BNCServer */,
+				0FB1C35616D3508C00CF6B00 /* TestClient */,
 			);
 		};
 /* End PBXProject section */
@@ -175,6 +230,15 @@
 				0FA3F80016D24EF300765EA6 /* main.m in Sources */,
 				0FA3F80716D24EF300765EA6 /* BncServerAppDelegate.m in Sources */,
 				0FA3F81216D24FF100765EA6 /* Wiimote.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		0FB1C35316D3508C00CF6B00 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				0FB1C35A16D3508C00CF6B00 /* main.cpp in Sources */,
+				0FB1C36216D351B400CF6B00 /* BNCClient.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -283,6 +347,20 @@
 			};
 			name = Release;
 		};
+		0FB1C35D16D3508C00CF6B00 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		0FB1C35E16D3508C00CF6B00 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -303,6 +381,14 @@
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
+		};
+		0FB1C35F16D3508C00CF6B00 /* Build configuration list for PBXNativeTarget "TestClient" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				0FB1C35D16D3508C00CF6B00 /* Debug */,
+				0FB1C35E16D3508C00CF6B00 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
 		};
 /* End XCConfigurationList section */
 	};
