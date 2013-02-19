@@ -75,17 +75,12 @@ int WiiDevUpdate(WiiDevRef ref) {
 			return -1;
 		}
 		int length = buf[0];
-        printf("length %d - ", length);
 		
 		err = recv(ref->sock, buf, length, MSG_WAITALL);
 		if (err != length) {
 			printf("recv %d returned %ld\n", length, err);
 			return -1;
 		}
-        for (int i = 0; i < length; i++) {
-            printf("%x ", buf[i]);
-        }
-        puts(" ");
 		
 		if (NULL != ref->dataCallback)
 			ref->dataCallback(buf, length);

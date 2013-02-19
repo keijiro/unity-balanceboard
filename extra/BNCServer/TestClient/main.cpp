@@ -24,7 +24,7 @@ void data_callback(WiiDevData data, int length) {
             sum += w;
         }
         std::printf("%f", sum);
-        std::puts("\n");
+        std::puts("");
     }
 }
 
@@ -51,7 +51,7 @@ void memread_callback(int address, const WiiDevData data, int length) {
         for (int i = 0; i < 4; i++) {
             std::printf("%d ", bnc.values[i]);
         }
-        std::puts("\n");
+        std::puts("");
     }
 }
 
