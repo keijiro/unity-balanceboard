@@ -225,7 +225,7 @@
     self.connecting.ichan = ichan;
 	self.connecting.ichanNote = [self.connecting.ichan registerForChannelCloseNotification:self selector:@selector(channelClosed:channel:)];
 	
-	[self.connecting reinitialize];
+	[self.connecting sendInitializeCode];
 
     NSLog(@"Open socket.");
 
@@ -350,7 +350,7 @@
 		
         NSLog(@"%@ Stream closed", wiimote.displayName);
 		
-		[wiimote performSelectorOnMainThread:@selector(reinitialize) withObject:nil waitUntilDone:YES];
+		[wiimote performSelectorOnMainThread:@selector(sendInitializeCode) withObject:nil waitUntilDone:YES];
 	}
 }
 

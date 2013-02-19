@@ -31,7 +31,7 @@
 @property IOBluetoothUserNotification *cchanNote;
 
 - (id)initWithDevice:(IOBluetoothDevice *)aDevice;
-- (void)reinitialize;
+- (void)sendInitializeCode;
 - (void)disconnect;
 
 @end
