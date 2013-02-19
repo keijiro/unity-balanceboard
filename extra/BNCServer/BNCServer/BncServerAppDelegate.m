@@ -72,7 +72,9 @@
 
 - (IBAction)disconect:(id)sender
 {
-	[self removeWiimote:self.wiimotes[[self.wiiList selectedRow]]];
+    if (self.wiiList.selectedRow >= 0) {
+        [self removeWiimote:self.wiimotes[self.wiiList.selectedRow]];
+    }
 }
 
 - (IBAction)sync:(id)sender
@@ -196,49 +198,57 @@
 
 - (void)connectionComplete:(IOBluetoothDevice *)device status:(IOReturn)status
 {
+    NSLog(@"Connection completed.");
+    
 	if (status != kIOReturnSuccess) {
 		[device closeConnection];
+        self.connecting = nil;
         self.syncButton.enabled = NO;
 		[self.syncIndicator stopAnimation:self];
-        self.statusLine.stringValue = [NSString stringWithFormat:@"Error connectring to Wii Remote (%08X)", status];
+        self.statusLine.stringValue = @"Failed on connecting to the controller.";
+        NSLog(@"Error on connectionComplete (%08X)", status);
 		return;
 	}
     
     self.connecting.device = device;
-	self.connecting.disconNote = [device registerForDisconnectNotification:self selector:@selector(disconnected:fromDevice:)];
+    self.connecting.disconNote = [device registerForDisconnectNotification:self selector:@selector(disconnected:fromDevice:)];
 	
-	// skipped SDP query - not needed and just slows down connection process
-    
-    self.connecting.cchan = nil;
-    self.connecting.ichan = nil;
-	
+    NSLog(@"Open L2CAP channel 17.");
+
     IOBluetoothL2CAPChannel *cchan = nil;
 	IOReturn ret = [device openL2CAPChannelSync:&cchan withPSM:17 delegate:self];
 	
     if (ret != kIOReturnSuccess) {
 		[device closeConnection];
-		self.statusLine.stringValue = [NSString stringWithFormat:@"Error opening L2CAP Channel 17. (%08X)", ret];
+        self.connecting = nil;
+		self.statusLine.stringValue = @"Failed to open L2CAP Channel 17.";
+		NSLog(@"Error on openL2CAPChannelSync 17 (%08X)", ret);
 		return;
 	}
     
     self.connecting.cchan = cchan;
     self.connecting.cchanNote = [self.connecting.cchan registerForChannelCloseNotification:self selector:@selector(channelClosed:channel:)];
 	
+    NSLog(@"Open L2CAP channel 19.");
+
     IOBluetoothL2CAPChannel *ichan = nil;
 	ret = [device openL2CAPChannelSync:&ichan withPSM:19 delegate:self];
-    
 
 	if (kIOReturnSuccess != ret) {
 		[device closeConnection];
-		self.statusLine.stringValue = [NSString stringWithFormat:@"Error opening L2CAP Channel 19. (%08X)", ret];
-		return;
+        self.connecting = nil;
+		self.statusLine.stringValue = @"Failed to open L2CAP Channel 19.";
+		NSLog(@"Error on openL2CAPChannelSync 19 (%08X)", ret);
+        return;
 	}
     
     self.connecting.ichan = ichan;
 	self.connecting.ichanNote = [self.connecting.ichan registerForChannelCloseNotification:self selector:@selector(channelClosed:channel:)];
 	
 	[self.connecting reinitialize];
-	
+
+    NSLog(@"Open socket.");
+
 	self.connecting.index = [self searchUnusedDeviceIndex];
 	self.connecting.displayName = [NSString stringWithFormat:@"wii%ld", self.connecting.index];
 
@@ -261,7 +271,9 @@
     
 	if (bind(sock, (void*)&addr, sizeof(addr)) < 0) {
 		[device closeConnection];
-		self.statusLine.stringValue = @"Error binding a socket.";
+        self.connecting = nil;
+		self.statusLine.stringValue = @"Failed to bind a socket.";
+        NSLog(@"Error on bind");
 		return;
     }
     
