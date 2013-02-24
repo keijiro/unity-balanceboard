@@ -158,7 +158,7 @@
 }
 
 - (void)checkDevice:(IOBluetoothDevice *)device {
-	if ([device.name isEqualToString:@"Nintendo RVL-WBC-01"]) {
+	if ([device.name hasPrefix:@"Nintendo RVL-"]) {
         if ([self wiimoteForDevice:device] != nil) return;
         
         [self.inquiry stop];
