@@ -45,15 +45,15 @@
 {
     [wiimote disconnect];
     [self.wiimotes removeObject:wiimote];
-	[self.wiimoteList noteNumberOfRowsChanged];
+	[self.deviceTable noteNumberOfRowsChanged];
 }
 
 #pragma mark Actions
 
 - (IBAction)disconect:(id)sender
 {
-    if (self.wiimoteList.selectedRow >= 0) {
-        [self removeWiimote:self.wiimotes[self.wiimoteList.selectedRow]];
+    if (self.deviceTable.selectedRow >= 0) {
+        [self removeWiimote:self.wiimotes[self.deviceTable.selectedRow]];
     }
 }
 
@@ -104,7 +104,7 @@
 }
 
 - (void)tableViewSelectionDidChange:(NSNotification *)notification {
-    self.disconnectButton.enabled = ([self.wiimoteList numberOfSelectedRows] > 0);
+    self.disconnectButton.enabled = ([self.deviceTable numberOfSelectedRows] > 0);
 }
 
 #pragma mark Bluetooth Device Inquiry delegates
@@ -257,7 +257,7 @@
 	[NSThread detachNewThreadSelector:@selector(serverThread:) toTarget:self withObject:self.connecting];
     
     [self.wiimotes addObject:self.connecting];
-	[self.wiimoteList noteNumberOfRowsChanged];
+	[self.deviceTable noteNumberOfRowsChanged];
 
     self.connecting = nil;
 
@@ -297,7 +297,7 @@
 - (void)serverThread:(Wiimote*)wiimote {
 	while (wiimote.device != nil && [wiimote.device isConnected]) {
 		wiimote->stream = -1;
-		[self.wiimoteList performSelectorOnMainThread:@selector(reloadData) withObject:nil waitUntilDone:NO];
+		[self.deviceTable performSelectorOnMainThread:@selector(reloadData) withObject:nil waitUntilDone:NO];
 
         struct sockaddr_in far;
 		socklen_t farlen = sizeof(far);
@@ -311,7 +311,7 @@
 		if (wiimote->stream < 0) break;
         NSLog(@"Accepted connection on fd %d", wiimote->stream);
 
-		[self.wiimoteList performSelectorOnMainThread:@selector(reloadData) withObject:nil waitUntilDone:NO];
+		[self.deviceTable performSelectorOnMainThread:@selector(reloadData) withObject:nil waitUntilDone:NO];
 		
 		unsigned char buffer[256];
 		ssize_t length;

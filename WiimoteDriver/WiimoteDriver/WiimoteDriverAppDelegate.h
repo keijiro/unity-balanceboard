@@ -15,7 +15,7 @@
 @property (assign) IBOutlet NSButton *disconnectButton;
 @property (assign) IBOutlet NSButton *syncButton;
 @property (assign) IBOutlet NSProgressIndicator *syncIndicator;
-@property (assign) IBOutlet NSTableView *wiimoteList;
+@property (assign) IBOutlet NSTableView *deviceTable;
 @property (assign) IBOutlet NSTextField *statusLine;
 
 - (IBAction)disconect:(id)sender;
