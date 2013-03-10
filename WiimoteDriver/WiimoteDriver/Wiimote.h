@@ -13,23 +13,29 @@
 @interface Wiimote : NSObject
 {
 @public
-	int sock, stream;
-    struct sockaddr_in addr;
+    NSInteger deviceIndex_;
+    struct sockaddr_in addr_;
+	int sock_;
+    int stream_;
 }
 
-@property (assign) NSInteger deviceIndex;
-@property (copy) NSString *displayName;
+@property (readonly) NSInteger deviceIndex;
+@property (readonly) NSString *displayName;
 
 @property NSLock *streamLock;
 
 @property IOBluetoothDevice *device;
-@property IOBluetoothL2CAPChannel *ichan;
 @property IOBluetoothL2CAPChannel *cchan;
+@property IOBluetoothL2CAPChannel *ichan;
 @property IOBluetoothUserNotification *disconNote;
 @property IOBluetoothUserNotification *ichanNote;
 @property IOBluetoothUserNotification *cchanNote;
 
-- (id)initWithDevice:(IOBluetoothDevice *)aDevice;
+- (id)initWithDevice:(IOBluetoothDevice *)device index:(NSInteger)index;
 - (void)disconnect;
+
+- (BOOL)openCChanWithObserver:(id)observer closeNotification:(SEL)closeSelector;
+- (BOOL)openIChanWithObserver:(id)observer closeNotification:(SEL)closeSelector;
+- (BOOL)openSocket;
 
 @end

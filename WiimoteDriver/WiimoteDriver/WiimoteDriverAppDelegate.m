@@ -106,7 +106,7 @@
 		case 1:
 			return wiimote.displayName;
 		case 2:
-			return (wiimote->stream != -1) ? @"Yes" : @"No";
+			return (wiimote->stream_ != -1) ? @"Yes" : @"No";
 		case 3:
 			return wiimote.device.addressString;
 		default:
@@ -181,7 +181,8 @@
     NSLog(@"Connection completed.");
 
     // Create a Wiimote for this device temporary.
-    Wiimote *wiimote = [[Wiimote alloc] initWithDevice:device];
+    Wiimote *wiimote = [[Wiimote alloc] initWithDevice:device index:[self searchUnusedDeviceIndex]];
+    [self.wiimotes addObject:wiimote];
 
     // No longer connecting.
     self.connecting = nil;
@@ -190,141 +191,97 @@
     self.syncButton.enabled = YES;
     [self.syncIndicator stopAnimation:self];
 	self.statusLine.stringValue = @"";
+	[self.deviceTable noteNumberOfRowsChanged];
     
 	if (status != kIOReturnSuccess) {
         // The connection is failed.
-		[device closeConnection];
         self.statusLine.stringValue = @"Failed on connecting to the controller.";
         NSLog(@"Error on connectionComplete (%08X)", status);
+        [self removeWiimote:wiimote];
 		return;
 	}
     
     // It seems the connection is succeeded, so we want to get notified on disconnection.
     wiimote.disconNote = [device registerForDisconnectNotification:self selector:@selector(disconnected:fromDevice:)];
-	
-    NSLog(@"Open L2CAP channel 17.");
-
-    IOBluetoothL2CAPChannel *cchan = nil;
-	IOReturn ret = [device openL2CAPChannelSync:&cchan withPSM:17 delegate:self];
-	
-    if (ret != kIOReturnSuccess) {
-		[device closeConnection];
-		self.statusLine.stringValue = @"Failed to open L2CAP Channel 17.";
-		NSLog(@"Error on openL2CAPChannelSync 17 (%08X)", ret);
-		return;
-	}
     
-    wiimote.cchan = cchan;
-    wiimote.cchanNote = [wiimote.cchan registerForChannelCloseNotification:self selector:@selector(channelClosed:channel:)];
-	
-    NSLog(@"Open L2CAP channel 19.");
-
-    IOBluetoothL2CAPChannel *ichan = nil;
-	ret = [device openL2CAPChannelSync:&ichan withPSM:19 delegate:self];
-
-	if (kIOReturnSuccess != ret) {
-		[device closeConnection];
-		self.statusLine.stringValue = @"Failed to open L2CAP Channel 19.";
-		NSLog(@"Error on openL2CAPChannelSync 19 (%08X)", ret);
-        return;
-	}
-    
-    wiimote.ichan = ichan;
-	wiimote.ichanNote = [wiimote.ichan registerForChannelCloseNotification:self selector:@selector(channelClosed:channel:)];
-
-    NSLog(@"Open socket.");
-
-	wiimote.deviceIndex = [self searchUnusedDeviceIndex];
-	wiimote.displayName = [NSString stringWithFormat:@"wii%ld", wiimote.deviceIndex];
-
-    int sock = socket(AF_INET, SOCK_STREAM, 0);
-
-    struct sockaddr_in addr;
-    bzero(&addr, sizeof(addr));
-    addr.sin_family = AF_INET;
-    addr.sin_addr.s_addr = htonl(INADDR_LOOPBACK);
-    addr.sin_port = htons(8000 + wiimote.deviceIndex);
-    
-	if (bind(sock, (void*)&addr, sizeof(addr)) < 0) {
-		[device closeConnection];
-		self.statusLine.stringValue = @"Failed to bind a socket.";
-        NSLog(@"Error on socket binding.");
+    // Open pipes.
+    if (![wiimote openCChanWithObserver:self closeNotification:@selector(channelClosed:channel:)]) {
+		self.statusLine.stringValue = @"Failed to open a control pipe.";
+        [self removeWiimote:wiimote];
 		return;
     }
     
-	listen(sock, 0);
-	
-    wiimote->sock = sock;
-    wiimote->addr = addr;
-	wiimote->stream = 0;
-
-	// Start a server thread.
-	[NSThread detachNewThreadSelector:@selector(serverThread:) toTarget:self withObject:wiimote];
+    if (![wiimote openIChanWithObserver:self closeNotification:@selector(channelClosed:channel:)]) {
+		self.statusLine.stringValue = @"Failed to open a data pipe.";
+        [self removeWiimote:wiimote];
+		return;
+    }
     
-    // Append this wiimote to the list.
-    [self.wiimotes addObject:wiimote];
-	[self.deviceTable noteNumberOfRowsChanged];
-}
-
-- (void)channelClosed:(IOBluetoothUserNotification *)note channel:(IOBluetoothL2CAPChannel *)channel
-{
-    Wiimote *wiimote = [self wiimoteForDevice:channel.device];
-	if (wiimote != nil) {
-		[self removeWiimote:wiimote];
-        self.statusLine.stringValue = [NSString stringWithFormat:@"Wii Remote %@ closed channel %d.", wiimote.displayName, channel.remoteChannelID];
-	} else {
-        if (self.connecting != nil) [wiimote disconnect];
-        self.statusLine.stringValue = [NSString stringWithFormat:@"Connecting Wii Remote closed channel %d.", channel.remoteChannelID];
-	}
+    if (![wiimote openSocket]) {
+        self.statusLine.stringValue = @"Failed to bind a socket.";
+        [self removeWiimote:wiimote];
+        return;
+    }
+    
+	// Start the server thread.
+	[NSThread detachNewThreadSelector:@selector(serverThread:) toTarget:self withObject:wiimote];
 }
 
 - (void)disconnected:(IOBluetoothUserNotification *)note fromDevice:(IOBluetoothDevice *)device
 {
     Wiimote *wiimote = [self wiimoteForDevice:device];
-	if (wiimote != nil) {
-		[self removeWiimote:wiimote];
-        self.statusLine.stringValue = [NSString stringWithFormat:@"Wii Remote %@ disconnected.", wiimote.displayName];
-	} else {
-//        self.statusLine.stringValue= @"Aborted connection.";
-        self.connecting = nil;
-        self.syncButton.enabled = YES;
-		[self.syncIndicator stopAnimation:self];
-	}
+    NSAssert(wiimote != nil, @"An unknown device has been disconnected.");
+    
+    NSLog(@"%@ has been disconnected.", wiimote.displayName);
+    
+    [self removeWiimote:wiimote];
+    self.statusLine.stringValue = [NSString stringWithFormat:@"%@ has been disconnected.", wiimote.displayName];
 }
 
-#pragma mark Interprocess communicating
+- (void)channelClosed:(IOBluetoothUserNotification *)note channel:(IOBluetoothL2CAPChannel *)channel
+{
+    Wiimote *wiimote = [self wiimoteForDevice:channel.device];
+    NSAssert(wiimote != nil, @"An unknown device has been disconnected.");
+    
+    NSLog(@"%@ closed channel %d.", wiimote.displayName, channel.remoteChannelID);
+
+    [self removeWiimote:wiimote];
+    self.statusLine.stringValue = [NSString stringWithFormat:@"%@ has been disconnected.", wiimote.displayName];
+}
+
+#pragma mark Interprocess communication
 
 - (void)serverThread:(Wiimote*)wiimote {
 	while (wiimote.device != nil && [wiimote.device isConnected]) {
-		wiimote->stream = -1;
+		wiimote->stream_ = -1;
 		[self.deviceTable performSelectorOnMainThread:@selector(reloadData) withObject:nil waitUntilDone:NO];
 
         struct sockaddr_in far;
 		socklen_t farlen = sizeof(far);
-		wiimote->stream = accept(wiimote->sock, (struct sockaddr*)&far, &farlen);
+		wiimote->stream_ = accept(wiimote->sock_, (struct sockaddr*)&far, &farlen);
 		
 		[wiimote.streamLock lock];
 		int value = 1;
-		setsockopt(wiimote->stream, SOL_SOCKET, SO_NOSIGPIPE, &value, sizeof(value));
+		setsockopt(wiimote->stream_, SOL_SOCKET, SO_NOSIGPIPE, &value, sizeof(value));
 		[wiimote.streamLock unlock];
         
-		if (wiimote->stream < 0) break;
-        NSLog(@"Accepted connection on fd %d", wiimote->stream);
+		if (wiimote->stream_ < 0) break;
+        NSLog(@"Accepted connection on fd %d", wiimote->stream_);
 
 		[self.deviceTable performSelectorOnMainThread:@selector(reloadData) withObject:nil waitUntilDone:NO];
 		
 		unsigned char buffer[256];
 		ssize_t length;
-		int stream = wiimote->stream;
+		int stream = wiimote->stream_;
         
-		while (wiimote->stream != -1) {
+		while (wiimote->stream_ != -1) {
 			ssize_t read = recv(stream, buffer, 1, MSG_WAITALL);
 			if (read != 1) {
 				NSLog(@"Read packet length failed (%ld)", read);
 				break;
 			}
 			
-			if (wiimote->stream != stream) break;
+			if (wiimote->stream_ != stream) break;
 			
 			length = buffer[0];
 			
@@ -342,9 +299,9 @@
 		NSLog(@"%@ Exited read loop", wiimote.displayName);
 
 		[wiimote.streamLock lock];
-		if (wiimote->stream != -1) {
-			close(wiimote->stream);
-			wiimote->stream = -1;
+		if (wiimote->stream_ != -1) {
+			close(wiimote->stream_);
+			wiimote->stream_ = -1;
 		}
 		[wiimote.streamLock unlock];
 		
@@ -363,26 +320,26 @@
 	
 	[wiimote.streamLock lock];
 	
-	if (wiimote->stream != -1) {
+	if (wiimote->stream_ != -1) {
 		unsigned char header[2];
 		header[0] = length + 1;
 		header[1] = l2capChannel.localChannelID;
         
         BOOL error = NO;
 
-		if (write(wiimote->stream, header, 2) != 2) {
+		if (write(wiimote->stream_, header, 2) != 2) {
             NSLog(@"Write header failed.");
             error = YES;
         }
 		
-		if (write(wiimote->stream, dataPointer, length) != length) {
+		if (write(wiimote->stream_, dataPointer, length) != length) {
             NSLog(@"Write payload failed.");
             error = YES;
         }
         
 		if (error) {
-			close(wiimote->stream);
-			wiimote->stream = -1;
+			close(wiimote->stream_);
+			wiimote->stream_ = -1;
 		}
 	}
 
