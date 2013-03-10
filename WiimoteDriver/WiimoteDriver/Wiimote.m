@@ -6,14 +6,14 @@
 
 @implementation Wiimote
 
-- (id)initWithDevice:(Wiimote *)aDevice
+- (id)initWithDevice:(IOBluetoothDevice *)aDevice
 {
     self = [super init];
     if (self) {
         stream = -1;
         sock = -1;
+        self.device = aDevice;
 		self.streamLock = [[NSLock alloc] init];
-		self.deviceLock = [[NSLock alloc] init];
     }
     return self;
 }
