@@ -167,6 +167,9 @@
         [self.syncIndicator stopAnimation:self];
         self.statusLine.stringValue= @"Failed to start a connection to Wii Remote.";
     }
+    
+    // We don't need this inquiry anymore.
+    self.inquiry = nil;
 }
 
 #pragma Connection process
