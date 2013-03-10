@@ -17,7 +17,7 @@
     struct sockaddr_in addr;
 }
 
-@property (assign) NSInteger index;
+@property (assign) NSInteger deviceIndex;
 @property (copy) NSString *displayName;
 
 @property NSLock *streamLock;
@@ -30,7 +30,6 @@
 @property IOBluetoothUserNotification *cchanNote;
 
 - (id)initWithDevice:(IOBluetoothDevice *)aDevice;
-- (void)sendInitializeCode;
 - (void)disconnect;
 
 @end

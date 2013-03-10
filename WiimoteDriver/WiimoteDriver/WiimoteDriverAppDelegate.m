@@ -54,7 +54,7 @@
     for (NSInteger index = 1; ; index++) {
         BOOL used = NO;
         for (Wiimote *wiimote in self.wiimotes) {
-            if (wiimote.index == index) {
+            if (wiimote.deviceIndex == index) {
                 used = YES;
                 break;
             }
@@ -180,19 +180,26 @@
     
     NSLog(@"Connection completed.");
 
+    // Create a Wiimote for this device temporary.
     Wiimote *wiimote = [[Wiimote alloc] initWithDevice:device];
 
+    // No longer connecting.
     self.connecting = nil;
+    
+    // Change the UI status.
     self.syncButton.enabled = YES;
     [self.syncIndicator stopAnimation:self];
+	self.statusLine.stringValue = @"";
     
 	if (status != kIOReturnSuccess) {
+        // The connection is failed.
 		[device closeConnection];
         self.statusLine.stringValue = @"Failed on connecting to the controller.";
         NSLog(@"Error on connectionComplete (%08X)", status);
 		return;
 	}
     
+    // It seems the connection is succeeded, so we want to get notified on disconnection.
     wiimote.disconNote = [device registerForDisconnectNotification:self selector:@selector(disconnected:fromDevice:)];
 	
     NSLog(@"Open L2CAP channel 17.");
@@ -224,13 +231,11 @@
     
     wiimote.ichan = ichan;
 	wiimote.ichanNote = [wiimote.ichan registerForChannelCloseNotification:self selector:@selector(channelClosed:channel:)];
-	
-	[wiimote sendInitializeCode];
 
     NSLog(@"Open socket.");
 
-	wiimote.index = [self searchUnusedDeviceIndex];
-	wiimote.displayName = [NSString stringWithFormat:@"wii%ld", wiimote.index];
+	wiimote.deviceIndex = [self searchUnusedDeviceIndex];
+	wiimote.displayName = [NSString stringWithFormat:@"wii%ld", wiimote.deviceIndex];
 
     int sock = socket(AF_INET, SOCK_STREAM, 0);
 
@@ -238,12 +243,12 @@
     bzero(&addr, sizeof(addr));
     addr.sin_family = AF_INET;
     addr.sin_addr.s_addr = htonl(INADDR_LOOPBACK);
-    addr.sin_port = htons(8000 + wiimote.index);
+    addr.sin_port = htons(8000 + wiimote.deviceIndex);
     
 	if (bind(sock, (void*)&addr, sizeof(addr)) < 0) {
 		[device closeConnection];
 		self.statusLine.stringValue = @"Failed to bind a socket.";
-        NSLog(@"Error on bind");
+        NSLog(@"Error on socket binding.");
 		return;
     }
     
@@ -252,15 +257,13 @@
     wiimote->sock = sock;
     wiimote->addr = addr;
 	wiimote->stream = 0;
-	
+
+	// Start a server thread.
 	[NSThread detachNewThreadSelector:@selector(serverThread:) toTarget:self withObject:wiimote];
     
+    // Append this wiimote to the list.
     [self.wiimotes addObject:wiimote];
 	[self.deviceTable noteNumberOfRowsChanged];
-
-	self.syncButton.enabled = YES;
-	self.statusLine.stringValue = @"";
-	[self.syncIndicator stopAnimation:self];
 }
 
 - (void)channelClosed:(IOBluetoothUserNotification *)note channel:(IOBluetoothL2CAPChannel *)channel
@@ -346,8 +349,6 @@
 		[wiimote.streamLock unlock];
 		
         NSLog(@"%@ Stream closed", wiimote.displayName);
-		
-		[wiimote performSelectorOnMainThread:@selector(sendInitializeCode) withObject:nil waitUntilDone:YES];
 	}
 }
 
