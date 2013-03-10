@@ -63,26 +63,6 @@
     }
 }
 
-- (void)checkDevice:(IOBluetoothDevice *)device {
-    NSAssert(self.connecting == nil, @"Can't check a device while a connection is running.");
-    
-	if ([device.name hasPrefix:@"Nintendo RVL-"]) {
-        if ([self wiimoteForDevice:device] == nil) {
-            [self.inquiry stop];
-
-            IOReturn ret = [device openConnection:self];
-            if (ret == kIOReturnSuccess) {
-                self.connecting = device;
-                self.statusLine.stringValue = @"Connecting...";
-            } else {
-                self.syncButton.enabled = YES;
-                [self.syncIndicator stopAnimation:self];
-                self.statusLine.stringValue= @"Failed to start a connection to Wii Remote.";
-            }
-        }
-	}
-}
-
 #pragma mark Actions
 
 - (IBAction)disconect:(id)sender
@@ -94,14 +74,14 @@
 
 - (IBAction)sync:(id)sender
 {
-    NSAssert(self.inquiry == nil && self.connecting == nil, @"Can't sync while an inquiry or a connection is running.");
+    NSAssert(self.inquiry == nil , @"Already syncing.");
+    NSAssert(self.connecting == nil, @"Can't sync while a connection is establishing.");
 
+    // Create an inquiry and start it.
  	self.inquiry = [IOBluetoothDeviceInquiry inquiryWithDelegate:self];
 	[self.inquiry clearFoundDevices];
-	
-	self.statusLine.stringValue = @"Preparing search...";
-
 	IOReturn ret = [self.inquiry start];
+
 	if (ret == kIOReturnSuccess){
 		self.syncButton.enabled = NO;
 		[self.syncIndicator startAnimation:self];
@@ -141,7 +121,7 @@
 #pragma mark Bluetooth Device Inquiry delegates
 
 - (void)deviceInquiryStarted:(IOBluetoothDeviceInquiry *)sender {
-	self.statusLine.stringValue = @"Searching. Press sync button.";
+	self.statusLine.stringValue = @"Searching. Press sync button on a device.";
 }
 
 - (void)deviceInquiryComplete:(IOBluetoothDeviceInquiry *)sender error:(IOReturn)error aborted:(BOOL)aborted {
@@ -153,16 +133,40 @@
 	if (error != kIOReturnSuccess) {
         self.statusLine.stringValue = @"Inquiry ended with error.";
 	} else {
-        self.statusLine.stringValue = @"Search complete.";
+        self.statusLine.stringValue = @"";
 	}
 }
 
 - (void)deviceInquiryDeviceNameUpdated:(IOBluetoothDeviceInquiry *)sender device:(IOBluetoothDevice *)device devicesRemaining:(uint32_t)devicesRemaining {
-	[self checkDevice:device];
+	[self checkFoundDevice:device];
 }
 
 - (void)deviceInquiryDeviceFound:(IOBluetoothDeviceInquiry *)sender device:(IOBluetoothDevice *)device {
-	[self checkDevice:device];
+	[self checkFoundDevice:device];
+}
+
+- (void)checkFoundDevice:(IOBluetoothDevice *)device {
+    NSAssert(self.connecting == nil, @"Can't check a device while connecting.");
+    
+    // Check if the device is a sort of Wii Remote.
+	if (![device.name hasPrefix:@"Nintendo RVL-"]) return;
+    
+    // Check if the device is already in our list.
+    if ([self wiimoteForDevice:device] != nil) return;
+    
+    // We can stop the inquiry at this point.
+    [self.inquiry stop];
+    
+    IOReturn ret = [device openConnection:self];
+    
+    if (ret == kIOReturnSuccess) {
+        self.connecting = device;
+        self.statusLine.stringValue = @"Connecting...";
+    } else {
+        self.syncButton.enabled = YES;
+        [self.syncIndicator stopAnimation:self];
+        self.statusLine.stringValue= @"Failed to start a connection to Wii Remote.";
+    }
 }
 
 #pragma Connection process
