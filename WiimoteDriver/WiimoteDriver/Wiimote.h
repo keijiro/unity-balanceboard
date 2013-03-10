@@ -21,7 +21,6 @@
 @property (copy) NSString *displayName;
 
 @property NSLock *streamLock;
-@property NSLock *deviceLock;
 
 @property IOBluetoothDevice *device;
 @property IOBluetoothL2CAPChannel *ichan;
