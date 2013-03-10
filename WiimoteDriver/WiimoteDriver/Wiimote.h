@@ -38,4 +38,9 @@
 - (BOOL)openIChanWithObserver:(id)observer closeNotification:(SEL)closeSelector;
 - (BOOL)openSocket;
 
+- (BOOL)acceptStreamConnection;
+- (void)doStreamReaderLoop;
+
+- (void)processReceivedData:(void *)dataPointer length:(size_t)length;
+
 @end

@@ -253,97 +253,25 @@
 
 - (void)serverThread:(Wiimote*)wiimote {
 	while (wiimote.device != nil && [wiimote.device isConnected]) {
-		wiimote->stream_ = -1;
+        if (![wiimote acceptStreamConnection]) break;
+        
+        // Update the device table.
 		[self.deviceTable performSelectorOnMainThread:@selector(reloadData) withObject:nil waitUntilDone:NO];
-
-        struct sockaddr_in far;
-		socklen_t farlen = sizeof(far);
-		wiimote->stream_ = accept(wiimote->sock_, (struct sockaddr*)&far, &farlen);
-		
-		[wiimote.streamLock lock];
-		int value = 1;
-		setsockopt(wiimote->stream_, SOL_SOCKET, SO_NOSIGPIPE, &value, sizeof(value));
-		[wiimote.streamLock unlock];
         
-		if (wiimote->stream_ < 0) break;
-        NSLog(@"Accepted connection on fd %d", wiimote->stream_);
-
+        [wiimote doStreamReaderLoop];
+		
+        // Update the device table.
 		[self.deviceTable performSelectorOnMainThread:@selector(reloadData) withObject:nil waitUntilDone:NO];
-		
-		unsigned char buffer[256];
-		ssize_t length;
-		int stream = wiimote->stream_;
-        
-		while (wiimote->stream_ != -1) {
-			ssize_t read = recv(stream, buffer, 1, MSG_WAITALL);
-			if (read != 1) {
-				NSLog(@"Read packet length failed (%ld)", read);
-				break;
-			}
-			
-			if (wiimote->stream_ != stream) break;
-			
-			length = buffer[0];
-			
-			read = recv(stream, buffer, length, MSG_WAITALL);
-			if (read != length) {
-				NSLog(@"Read packet payload failed (%ld != %ld)\n", read, length);
-				break;
-			}
-            
-            if (buffer[0] == 0xa2) {
-                [wiimote.cchan writeSync:buffer length:length];
-            }
-		}
-        
-		NSLog(@"%@ Exited read loop", wiimote.displayName);
-
-		[wiimote.streamLock lock];
-		if (wiimote->stream_ != -1) {
-			close(wiimote->stream_);
-			wiimote->stream_ = -1;
-		}
-		[wiimote.streamLock unlock];
-		
-        NSLog(@"%@ Stream closed", wiimote.displayName);
 	}
 }
 
 - (void)l2capChannelData:(IOBluetoothL2CAPChannel *)l2capChannel data:(void *)dataPointer length:(size_t)length{
-	IOBluetoothDevice *sender = l2capChannel.device;
-    Wiimote *wiimote = [self wiimoteForDevice:sender];
-	
-	if (wiimote == nil) {
-		NSLog(@"Received data for unknown wiimote!");
-		return;
-	}
-	
-	[wiimote.streamLock lock];
-	
-	if (wiimote->stream_ != -1) {
-		unsigned char header[2];
-		header[0] = length + 1;
-		header[1] = l2capChannel.localChannelID;
-        
-        BOOL error = NO;
-
-		if (write(wiimote->stream_, header, 2) != 2) {
-            NSLog(@"Write header failed.");
-            error = YES;
-        }
-		
-		if (write(wiimote->stream_, dataPointer, length) != length) {
-            NSLog(@"Write payload failed.");
-            error = YES;
-        }
-        
-		if (error) {
-			close(wiimote->stream_);
-			wiimote->stream_ = -1;
-		}
-	}
-
-	[wiimote.streamLock unlock];
+	IOBluetoothDevice *senderDevice = l2capChannel.device;
+    
+    Wiimote *wiimote = [self wiimoteForDevice:senderDevice];
+    NSAssert(wiimote != nil, @"Received data for unknown wiimote.");
+    
+    [wiimote processReceivedData:dataPointer length:length];
 }
 
 @end

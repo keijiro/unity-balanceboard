@@ -129,4 +129,94 @@
     return YES;
 }
 
+- (BOOL)acceptStreamConnection
+{
+    struct sockaddr_in far;
+    socklen_t farlen = sizeof(far);
+    int newStream = accept(sock_, (struct sockaddr*)&far, &farlen);
+
+    if (newStream < 0) return NO;
+
+    int value = 1;
+    setsockopt(newStream, SOL_SOCKET, SO_NOSIGPIPE, &value, sizeof(value));
+
+    [self.streamLock lock];
+    stream_ = newStream;
+    [self.streamLock unlock];
+
+    NSLog(@"Accepted a connection on fd %d.", newStream);
+    
+    return YES;
+}
+
+- (void)doStreamReaderLoop
+{
+    while (stream_ >= 0) {
+        unsigned char buffer[256];
+        ssize_t length;
+        
+        ssize_t read = recv(stream_, buffer, 1, MSG_WAITALL);
+        if (read != 1) {
+            NSLog(@"Failed to read packet length (%ld)", read);
+            break;
+        }
+        length = buffer[0];
+        
+        // Check if the stream is still valid.
+        if (stream_ < 0) break;
+        
+        read = recv(stream_, buffer, length, MSG_WAITALL);
+        if (read != length) {
+            NSLog(@"Failed to read packet payload failed (%ld)", length);
+            break;
+        }
+        
+        // Send control data.
+        if (buffer[0] == 0xa2) {
+            [self.cchan writeSync:buffer length:length];
+        }
+    }
+    
+    NSLog(@"A reader loop on %@ has been exited.", self.displayName);
+    
+    [self.streamLock lock];
+    if (stream_ >= 0) {
+        close(stream_);
+        stream_ = -1;
+    }
+    [self.streamLock unlock];
+}
+
+- (void)processReceivedData:(void *)dataPointer length:(size_t)length
+{
+    // Do nothing with nonactive stream.
+    if (stream_ < 0) return;
+    
+	[self.streamLock lock];
+	
+    unsigned char header[2];
+    header[0] = length + 1;
+    header[1] = self.cchan.localChannelID;
+    
+    BOOL error = NO;
+    
+    if (write(stream_, header, 2) != 2) {
+        NSLog(@"Failed to write header.");
+        error = YES;
+    }
+    
+    if (!error && write(stream_, dataPointer, length) != length) {
+        NSLog(@"Failed to write payload.");
+        error = YES;
+    }
+    
+    // Close the stream on errors.
+    if (error) {
+        close(stream_);
+        stream_ = -1;
+    }
+    
+	[self.streamLock unlock];
+}
+
 @end
