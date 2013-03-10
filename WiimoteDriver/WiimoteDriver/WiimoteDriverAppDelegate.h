@@ -8,8 +8,8 @@
 @interface WiimoteDriverAppDelegate : NSObject <NSApplicationDelegate>
 
 @property NSMutableArray *wiimotes;
-@property Wiimote *connecting;
 @property IOBluetoothDeviceInquiry *inquiry;
+@property IOBluetoothDevice *connecting;
 
 @property (assign) IBOutlet NSWindow *window;
 @property (assign) IBOutlet NSButton *disconnectButton;

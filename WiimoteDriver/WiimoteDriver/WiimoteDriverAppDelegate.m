@@ -12,10 +12,6 @@
 #include <sys/stat.h>
 #include <netdb.h>
 
-@interface WiimoteDriverAppDelegate(private)
-- (void)checkDevice:(IOBluetoothDevice*)device;
-@end
-
 @implementation WiimoteDriverAppDelegate
 
 #pragma mark Application lifecycle
@@ -23,10 +19,6 @@
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification
 {
 	self.wiimotes = [[NSMutableArray alloc] initWithCapacity:16];
-	self.inquiry = nil;
-    
-    self.statusLine.stringValue = @"";
-    
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(incomingConnection:) name:NSFileHandleConnectionAcceptedNotification object:nil];
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(dataAvailable:) name:NSFileHandleDataAvailableNotification object:nil];
 }
@@ -36,7 +28,10 @@
     for (Wiimote *wiimote in self.wiimotes) {
         [wiimote disconnect];
     }
+
     self.wiimotes = nil;
+    self.inquiry = nil;
+    self.connecting = nil;
 }
 
 #pragma mark Private methods
@@ -46,6 +41,46 @@
     [wiimote disconnect];
     [self.wiimotes removeObject:wiimote];
 	[self.deviceTable noteNumberOfRowsChanged];
+}
+
+- (Wiimote *)wiimoteForDevice:(IOBluetoothDevice *)device {
+    for (Wiimote *wiimote in self.wiimotes) {
+        if ([device isEqual:wiimote.device]) return wiimote;
+    }
+    return nil;
+}
+
+- (NSInteger)searchUnusedDeviceIndex {
+    for (NSInteger index = 1; ; index++) {
+        BOOL used = NO;
+        for (Wiimote *wiimote in self.wiimotes) {
+            if (wiimote.index == index) {
+                used = YES;
+                break;
+            }
+        }
+        if (!used) return index;
+    }
+}
+
+- (void)checkDevice:(IOBluetoothDevice *)device {
+    NSAssert(self.connecting == nil, @"Can't check a device while a connection is running.");
+    
+	if ([device.name hasPrefix:@"Nintendo RVL-"]) {
+        if ([self wiimoteForDevice:device] == nil) {
+            [self.inquiry stop];
+
+            IOReturn ret = [device openConnection:self];
+            if (ret == kIOReturnSuccess) {
+                self.connecting = device;
+                self.statusLine.stringValue = @"Connecting...";
+            } else {
+                self.syncButton.enabled = YES;
+                [self.syncIndicator stopAnimation:self];
+                self.statusLine.stringValue= @"Failed to start a connection to Wii Remote.";
+            }
+        }
+	}
 }
 
 #pragma mark Actions
@@ -59,23 +94,19 @@
 
 - (IBAction)sync:(id)sender
 {
+    NSAssert(self.inquiry == nil && self.connecting == nil, @"Can't sync while an inquiry or a connection is running.");
+
  	self.inquiry = [IOBluetoothDeviceInquiry inquiryWithDelegate:self];
-	
-	if (self.inquiry == NULL) {
-		self.statusLine.stringValue = @"Error: Failed to alloc IOBluetoothDeviceInquiry";
-	}
-	
 	[self.inquiry clearFoundDevices];
 	
 	self.statusLine.stringValue = @"Preparing search...";
+
 	IOReturn ret = [self.inquiry start];
-	
 	if (ret == kIOReturnSuccess){
 		self.syncButton.enabled = NO;
 		[self.syncIndicator startAnimation:self];
 	} else {
-		self.statusLine.stringValue = [NSString stringWithFormat:@"Error: Inquiry did not start, error %d", ret];
-        self.inquiry.delegate = nil;
+		self.statusLine.stringValue = @"Failed to start an inquiry.";
         self.inquiry = nil;
 	}
 }
@@ -117,11 +148,10 @@
     self.inquiry = nil;
     
     self.syncButton.enabled = (self.connecting == nil);
-	
 	[self.syncIndicator stopAnimation:self];
 	
 	if (error != kIOReturnSuccess) {
-        self.statusLine.stringValue = [NSString stringWithFormat:@"Error: Inquiry ended with error %d", error];
+        self.statusLine.stringValue = @"Inquiry ended with error.";
 	} else {
         self.statusLine.stringValue = @"Search complete.";
 	}
@@ -137,61 +167,26 @@
 
 #pragma Connection process
 
-- (Wiimote *)wiimoteForDevice:(IOBluetoothDevice *)device {
-    for (Wiimote *wiimote in self.wiimotes) {
-        if ([device isEqual:wiimote.device]) return wiimote;
-    }
-    return nil;
-}
-
-- (NSInteger)searchUnusedDeviceIndex {
-    for (NSInteger index = 1; ; index++) {
-        BOOL used = NO;
-        for (Wiimote *wiimote in self.wiimotes) {
-            if (wiimote.index == index) {
-                used = YES;
-                break;
-            }
-        }
-        if (!used) return index;
-    }
-}
-
-- (void)checkDevice:(IOBluetoothDevice *)device {
-	if ([device.name hasPrefix:@"Nintendo RVL-"]) {
-        if ([self wiimoteForDevice:device] != nil) return;
-        
-        [self.inquiry stop];
-		
-		self.connecting = [[Wiimote alloc] initWithDevice:device];
-		
-        IOReturn ret = [device openConnection:self];
-		if (ret == kIOReturnSuccess) {
-            self.statusLine.stringValue = @"Connecting...";
-		} else {
-            self.syncButton.enabled = YES;
-			[self.syncIndicator stopAnimation:self];
-            self.statusLine.stringValue= [NSString stringWithFormat:@"Error starting connection to Wii Remote (%08X)", ret];
-		}
-	}
-}
-
 - (void)connectionComplete:(IOBluetoothDevice *)device status:(IOReturn)status
 {
+    NSAssert([device isEqual:self.connecting], @"Wrong device");
+    
     NSLog(@"Connection completed.");
+
+    Wiimote *wiimote = [[Wiimote alloc] initWithDevice:device];
+
+    self.connecting = nil;
+    self.syncButton.enabled = YES;
+    [self.syncIndicator stopAnimation:self];
     
 	if (status != kIOReturnSuccess) {
 		[device closeConnection];
-        self.connecting = nil;
-        self.syncButton.enabled = NO;
-		[self.syncIndicator stopAnimation:self];
         self.statusLine.stringValue = @"Failed on connecting to the controller.";
         NSLog(@"Error on connectionComplete (%08X)", status);
 		return;
 	}
     
-    self.connecting.device = device;
-    self.connecting.disconNote = [device registerForDisconnectNotification:self selector:@selector(disconnected:fromDevice:)];
+    wiimote.disconNote = [device registerForDisconnectNotification:self selector:@selector(disconnected:fromDevice:)];
 	
     NSLog(@"Open L2CAP channel 17.");
 
@@ -200,14 +195,13 @@
 	
     if (ret != kIOReturnSuccess) {
 		[device closeConnection];
-        self.connecting = nil;
 		self.statusLine.stringValue = @"Failed to open L2CAP Channel 17.";
 		NSLog(@"Error on openL2CAPChannelSync 17 (%08X)", ret);
 		return;
 	}
     
-    self.connecting.cchan = cchan;
-    self.connecting.cchanNote = [self.connecting.cchan registerForChannelCloseNotification:self selector:@selector(channelClosed:channel:)];
+    wiimote.cchan = cchan;
+    wiimote.cchanNote = [wiimote.cchan registerForChannelCloseNotification:self selector:@selector(channelClosed:channel:)];
 	
     NSLog(@"Open L2CAP channel 19.");
 
@@ -216,21 +210,20 @@
 
 	if (kIOReturnSuccess != ret) {
 		[device closeConnection];
-        self.connecting = nil;
 		self.statusLine.stringValue = @"Failed to open L2CAP Channel 19.";
 		NSLog(@"Error on openL2CAPChannelSync 19 (%08X)", ret);
         return;
 	}
     
-    self.connecting.ichan = ichan;
-	self.connecting.ichanNote = [self.connecting.ichan registerForChannelCloseNotification:self selector:@selector(channelClosed:channel:)];
+    wiimote.ichan = ichan;
+	wiimote.ichanNote = [wiimote.ichan registerForChannelCloseNotification:self selector:@selector(channelClosed:channel:)];
 	
-	[self.connecting sendInitializeCode];
+	[wiimote sendInitializeCode];
 
     NSLog(@"Open socket.");
 
-	self.connecting.index = [self searchUnusedDeviceIndex];
-	self.connecting.displayName = [NSString stringWithFormat:@"wii%ld", self.connecting.index];
+	wiimote.index = [self searchUnusedDeviceIndex];
+	wiimote.displayName = [NSString stringWithFormat:@"wii%ld", wiimote.index];
 
     int sock = socket(AF_INET, SOCK_STREAM, 0);
 
@@ -238,11 +231,10 @@
     bzero(&addr, sizeof(addr));
     addr.sin_family = AF_INET;
     addr.sin_addr.s_addr = htonl(INADDR_LOOPBACK);
-    addr.sin_port = htons(8000 + self.connecting.index);
+    addr.sin_port = htons(8000 + wiimote.index);
     
 	if (bind(sock, (void*)&addr, sizeof(addr)) < 0) {
 		[device closeConnection];
-        self.connecting = nil;
 		self.statusLine.stringValue = @"Failed to bind a socket.";
         NSLog(@"Error on bind");
 		return;
@@ -250,16 +242,14 @@
     
 	listen(sock, 0);
 	
-    self.connecting->sock = sock;
-    self.connecting->addr = addr;
-	self.connecting->stream = 0;
+    wiimote->sock = sock;
+    wiimote->addr = addr;
+	wiimote->stream = 0;
 	
-	[NSThread detachNewThreadSelector:@selector(serverThread:) toTarget:self withObject:self.connecting];
+	[NSThread detachNewThreadSelector:@selector(serverThread:) toTarget:self withObject:wiimote];
     
-    [self.wiimotes addObject:self.connecting];
+    [self.wiimotes addObject:wiimote];
 	[self.deviceTable noteNumberOfRowsChanged];
-
-    self.connecting = nil;
 
 	self.syncButton.enabled = YES;
 	self.statusLine.stringValue = @"";
@@ -273,7 +263,7 @@
 		[self removeWiimote:wiimote];
         self.statusLine.stringValue = [NSString stringWithFormat:@"Wii Remote %@ closed channel %d.", wiimote.displayName, channel.remoteChannelID];
 	} else {
-        if (self.connecting != nil) [self.connecting disconnect];
+        if (self.connecting != nil) [wiimote disconnect];
         self.statusLine.stringValue = [NSString stringWithFormat:@"Connecting Wii Remote closed channel %d.", channel.remoteChannelID];
 	}
 }
