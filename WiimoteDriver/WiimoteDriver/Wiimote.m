@@ -108,24 +108,24 @@
 {
     NSLog(@"Open socket.");
     
-    int sock = socket(AF_INET, SOCK_STREAM, 0);
+    sock_ = socket(AF_INET, SOCK_STREAM, 0);
+    if (sock_ < 0) {
+        NSLog(@"Error on creating a socket.");
+        return NO;
+    }
     
-    struct sockaddr_in addr;
-    bzero(&addr, sizeof(addr));
-    addr.sin_family = AF_INET;
-    addr.sin_addr.s_addr = htonl(INADDR_LOOPBACK);
-    addr.sin_port = htons(8000 + deviceIndex_);
+    bzero(&addr_, sizeof(addr_));
+    addr_.sin_family = AF_INET;
+    addr_.sin_addr.s_addr = INADDR_ANY;
+    addr_.sin_port = htons(8000 + deviceIndex_);
     
-	if (bind(sock, (void*)&addr, sizeof(addr)) < 0) {
+	if (bind(sock_, (void*)&addr_, sizeof(addr_)) < 0) {
         NSLog(@"Error on socket binding.");
 		return NO;
     }
     
 	listen(sock_, 0);
-	
-    sock_ = sock;
-    addr_ = addr;
-    
+	    
     return YES;
 }
 
@@ -196,7 +196,7 @@
 	
     unsigned char header[2];
     header[0] = length + 1;
-    header[1] = self.cchan.localChannelID;
+    header[1] = self.ichan.localChannelID;
     
     BOOL error = NO;
     
